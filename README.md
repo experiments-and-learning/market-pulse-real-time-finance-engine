@@ -1,27 +1,77 @@
-## Phase 1: API to JSON
+# MarketPulse — Phase 1: API to JSON
 
-This phase focuses on getting the IBM daily stock exchange data using an API key and storing that static data into a JSON file for further processing
+[![Phase](https://img.shields.io/badge/Phase-1%20of%204-blue)](https://github.com/experiments-and-learning/market-pulse-real-time-finance-engine)
+[![Stack](https://img.shields.io/badge/Stack-Python%20%7C%20Alpha%20Vantage%20%7C%20JSON-informational)](https://github.com/experiments-and-learning/market-pulse-real-time-finance-engine/tree/api-to-json)
 
-## Features
+Fetches IBM daily stock data from the Alpha Vantage API and caches it as a local JSON file (`data.json`). The cache avoids redundant API calls during downstream development and testing.
 
-- Accessing the API key securely using `os.getenv()`.
-- Getting the prices day-by-day
-- Converting the raw data into JSON format
-- Saving the JSON data into a local file and verifying it by reading it back
+**Part of:** [MarketPulse: Real-Time Finance Engine](https://github.com/experiments-and-learning/market-pulse-real-time-finance-engine)
 
-### Setup Instructions
+---
 
-1. Install the required libraries by running `pip install -r requirements.txt` in your terminal.
-2. Navigate to the Alpha Vantage Support Page
-3. Sign up (it's free!)
-4. Save the API key you get securely in a `.env` file with the format `VARIABLE_NAME=YOUR_KEY`.
-5. Copy/download the Python script and run it using `python real_time_market_pulse_dashboard_api_to_json.py` to fetch daily stock data from this repository.
-6. Run the Python script to fecth data using API and save it to a JSON file (named `data.json`) to optimize API usage.
-7. Your final data for creating the dashboard is ready!
+## What This Phase Does
 
-### Challenge:
+1. Reads the Alpha Vantage API key from a `.env` file using `os.getenv()`
+2. Calls the `TIME_SERIES_DAILY` endpoint for IBM stock
+3. Dumps the raw JSON response to `data.json` with `indent=4` for human readability
+4. Reads `data.json` back and prints it to verify the write succeeded
 
-- Initial raw data was saved to the JSON file as one cramped line.
-- Used `indent=4` argument while "dumping" the JSON file to make the data human readable.
-- Used `w` (write-only) argument to create the JSON file and to write to the JSON file.
-- Used the `r` (read-only) argument to read and verify the data back from the file to the Python IDLE.
+---
+
+## Directory Structure
+
+    api-to-json/
+    ├── real_time_market_pulse_dashboard_api_to_json.py   ← main script
+    ├── requirements.txt
+    ├── LICENSE
+    └── README.md
+
+`data.json` is generated at runtime and is not committed — it is listed in `.gitignore`.
+
+---
+
+## Prerequisites
+
+- Python 3.8+
+- A free [Alpha Vantage API key](https://www.alphavantage.co/support/#api-key)
+
+---
+
+## Setup and Run
+
+    # 1. Clone and switch to this branch
+    git clone https://github.com/experiments-and-learning/market-pulse-real-time-finance-engine.git
+    cd market-pulse-real-time-finance-engine
+    git checkout api-to-json
+
+    # 2. Install dependencies
+    pip install -r requirements.txt
+
+    # 3. Create a .env file in the project root
+    # Add the following line:
+    #   Alpha_Vantage_Key=your_api_key_here
+
+    # 4. Run
+    python real_time_market_pulse_dashboard_api_to_json.py
+
+Output: `data.json` is written to the project root and its contents are printed to console.
+
+---
+
+## Key Design Decisions
+
+- `indent=4` is passed to `json.dump()` to make the file human-readable and prevent the entire response being written as one compressed line.
+- The file is opened with `'w'` (write) to create or overwrite, then re-opened with `'r'` (read-only) to verify the write.
+- Local caching means Phases 2–4 can be developed and tested without consuming the free tier's 25 daily API calls.
+
+---
+
+## Next Phase
+
+[Phase 2: Data Pipeline](https://github.com/experiments-and-learning/market-pulse-real-time-finance-engine/tree/data-pipeline) — parses `data.json` to extract OHLCV fields.
+
+---
+
+## License
+
+MIT License
